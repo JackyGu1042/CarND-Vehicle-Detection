@@ -23,17 +23,11 @@ The goals / steps of this project are the following:
 ###Here I will consider the rubric points individually and describe how I addressed each point in my implementation.  
 
 ---
-###Writeup / README
+### Histogram of Oriented Gradients (HOG)
 
-####1. Provide a Writeup / README that includes all the rubric points and how you addressed each one.  You can submit your writeup as markdown or pdf.  [Here](https://github.com/udacity/CarND-Vehicle-Detection/blob/master/writeup_template.md) is a template writeup for this project you can use as a guide and a starting point.  
+####1. Extracted HOG features from the training images.
 
-You're reading it!
-
-###Histogram of Oriented Gradients (HOG)
-
-####1. Explain how (and identify where in your code) you extracted HOG features from the training images.
-
-The code for this step is contained in the first code cell of the IPython notebook (or in lines # through # of the file called `some_file.py`).  
+The code for this step is contained in the second code cell of the IPython notebook .
 
 I started by reading in all the `vehicle` and `non-vehicle` images.  Here is an example of one of each of the `vehicle` and `non-vehicle` classes:
 
@@ -48,23 +42,41 @@ Here is an example using the `YCrCb` color space and HOG parameters of `orientat
 
 ####2. Explain how you settled on your final choice of HOG parameters.
 
-I tried various combinations of parameters and...
+I tried various combinations of parameters and I choose the parameter like below:
+`
+color_space = 'YCrCb' # Can be RGB, HSV, LUV, HLS, YUV, YCrCb
+orient = 9  # HOG orientations
+pix_per_cell = 8 # HOG pixels per cell
+cell_per_block = 2 # HOG cells per block
+hog_channel = 0 # Can be 0, 1, 2, or "ALL"
+`
 
 ####3. Describe how (and identify where in your code) you trained a classifier using your selected HOG features (and color features if you used them).
 
-I trained a linear SVM using...
+I trained a linear SVM using both bin_spatial(), color_hist() and get_hog_features(). And I found bin_spatial and hog feature are more important than color histograms.
 
 ###Sliding Window Search
 
 ####1. Describe how (and identify where in your code) you implemented a sliding window search.  How did you decide what scales to search and how much to overlap windows?
 
-I decided to search random window positions at random scales all over the image and came up with this (ok just kidding I didn't actually ;):
+I decided to search with 3 scale windows in all over the image and came up with this:
+`
+windows_1 = slide_window(image, x_start_stop=[600, 1280], y_start_stop=[400, 528], xy_window=(32, 32), xy_overlap=(0.5, 0.5))
 
+windows_2 = slide_window(image, x_start_stop=[600, 1280], y_start_stop=[400, 528], xy_window=(64, 64), xy_overlap=(0.5, 0.5))
+
+windows_3 = slide_window(image, x_start_stop=[600, 1280], y_start_stop=[400, 720], xy_window=(96, 96), xy_overlap=(0.5, 0.5))
+
+windows_4 = slide_window(image, x_start_stop=[600, 1280], y_start_stop=[400, 720], xy_window=(128, 128), xy_overlap=(0.5, 0.5))
+                    
+windows =   windows_1 + windows_2 + windows_3 + windows_4  
+`
 ![alt text][image3]
 
 ####2. Show some examples of test images to demonstrate how your pipeline is working.  What did you do to optimize the performance of your classifier?
 
 Ultimately I searched on two scales using YCrCb 3-channel HOG features plus spatially binned color and histograms of color in the feature vector, which provided a nice result.  Here are some example images:
+
 
 ![alt text][image4]
 ---
