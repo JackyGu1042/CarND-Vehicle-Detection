@@ -36,59 +36,74 @@ I then explored different color spaces and different `skimage.hog()` parameters 
 ####2. Explain how you settled on your final choice of HOG parameters.
 
 I tried various combinations of parameters and I choose the parameter like below:
-`
+```python
 color_space = 'RGB' # Can be RGB, HSV, LUV, HLS, YUV, YCrCb
 orient = 9  # HOG orientations
 pix_per_cell = 8 # HOG pixels per cell
 cell_per_block = 2 # HOG cells per block
 hog_channel = "ALL" # Can be 0, 1, 2, or "ALL"
-`
+```
 I used to try many different combinations, finally I found the classifier need more features about HOG, so I choose `hog_channel = "ALL"` to get more feature.
 
 ####3. Describe how (and identify where in your code) you trained a classifier using your selected HOG features (and color features if you used them).
 
 I trained a linear SVM using both bin_spatial(), color_hist() and get_hog_features(). And I found bin_spatial and hog feature are more important than color histograms.
-`
+```python
 spatial_feat = True # Spatial features on or off
 hist_feat = True # Histogram features on or off
 hog_feat = True # HOG features on or off
-`
+```
 
 After combining the different feature vector, I use `StandardScaler()` method to normalize the training data.
 
-`
+```python
 X = np.vstack((car_features, notcar_features)).astype(np.float64)                        
 # Fit a per-column scaler
 X_scaler = StandardScaler().fit(X)
 # Apply the scaler to X
 scaled_X = X_scaler.transform(X)
-`
+```
 Finally, I use linear SVM to fit the data `svc = LinearSVC()`.
 
 ###Sliding Window Search
 
 ####1. Describe how (and identify where in your code) you implemented a sliding window search.  How did you decide what scales to search and how much to overlap windows?
 
-I decided to search with 3 scale windows in all over the image and came up with this:
-`
-windows_1 = slide_window(image, x_start_stop=[600, 1280], y_start_stop=[400, 528], xy_window=(32, 32), xy_overlap=(0.5, 0.5))
+I used to use 4 scales(32*32, 64*64, 96*96, 128*128) to capture the windows, like below code. But later, I found the overlap is more impatant than different scales type. So I decided to use only 2 scales(32*32, 96*96), and 32*32 scale scan in upon area and 96*96 scan wider range with high overlap rate. 
 
-windows_2 = slide_window(image, x_start_stop=[600, 1280], y_start_stop=[400, 528], xy_window=(64, 64), xy_overlap=(0.5, 0.5))
+```python
+windows_1 = slide_window(image, x_start_stop=[600, 1280], y_start_stop=[400, 528], 
+                    xy_window=(32, 32), xy_overlap=(0.5, 0.5))
 
-windows_3 = slide_window(image, x_start_stop=[600, 1280], y_start_stop=[400, 720], xy_window=(96, 96), xy_overlap=(0.5, 0.5))
+windows_2 = slide_window(image, x_start_stop=[600, 1280], y_start_stop=[400, 528], 
+                    xy_window=(64, 64), xy_overlap=(0.8, 0.8))
 
-windows_4 = slide_window(image, x_start_stop=[600, 1280], y_start_stop=[400, 720], xy_window=(128, 128), xy_overlap=(0.5, 0.5))
+windows_3 = slide_window(image, x_start_stop=[600, 1280], y_start_stop=[400, 720], 
+                    xy_window=(96, 96), xy_overlap=(0.8, 0.8))
+
+windows_4 = slide_window(image, x_start_stop=[600, 1280], y_start_stop=[400, 720], 
+                    xy_window=(128, 128), xy_overlap=(0.5, 0.5))
                     
-windows =   windows_1 + windows_2 + windows_3 + windows_4  
-`
-![alt text][image3]
+windows =   windows_1 + windows_3  
+```
 
 ####2. Show some examples of test images to demonstrate how your pipeline is working.  What did you do to optimize the performance of your classifier?
 
-Ultimately I searched on two scales using YCrCb 3-channel HOG features plus spatially binned color and histograms of color in the feature vector, which provided a nice result.  Here are some example images:
+Ultimately I searched on two scales using `RGB` All-channel HOG features plus spatially binned color and histograms of color in the feature vector, which provided a nice result. 
 
+```python
+color_space = 'RGB' # Can be RGB, HSV, LUV, HLS, YUV, YCrCb
+orient = 9  # HOG orientations
+pix_per_cell = 8 # HOG pixels per cell
+cell_per_block = 2 # HOG cells per block
+hog_channel = "ALL" # Can be 0, 1, 2, or "ALL"
+spatial_size = (32, 32) # Spatial binning dimensions
+hist_bins = 32    # Number of histogram bins
+spatial_feat = True # Spatial features on or off
+hist_feat = True # Histogram features on or off
+hog_feat = True # HOG features on or off
+```
 
-![alt text][image4]
 ---
 
 ### Video Implementation
