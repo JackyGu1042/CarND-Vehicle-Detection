@@ -29,31 +29,41 @@ The goals / steps of this project are the following:
 
 The code for this step is contained in the second code cell of the IPython notebook .
 
-I started by reading in all the `vehicle` and `non-vehicle` images.  Here is an example of one of each of the `vehicle` and `non-vehicle` classes:
+I started by reading in all the `vehicle` and `non-vehicle` images. Beacause the cars is always appear in right side and far position, so I mainly use `vehicles/GTI_Right/image****.png` and `vehicles/GTI_Far/image****.png` as `vehicle` images, and use `non-vehicles/GTI/image****.png` as `non-vehicle` images. Moreover, the quantity is 1500 for both side. I used to try to use more pieces training images, but I found the linear SVM's performance is not good with bigger size of data.
 
-![alt text][image1]
-
-I then explored different color spaces and different `skimage.hog()` parameters (`orientations`, `pixels_per_cell`, and `cells_per_block`).  I grabbed random images from each of the two classes and displayed them to get a feel for what the `skimage.hog()` output looks like.
-
-Here is an example using the `YCrCb` color space and HOG parameters of `orientations=8`, `pixels_per_cell=(8, 8)` and `cells_per_block=(2, 2)`:
-
-
-![alt text][image2]
+I then explored different color spaces and different `skimage.hog()` parameters (`orientations`, `pixels_per_cell`, and `cells_per_block`). You can find the exmaple in the jupyter notebook file(or html file).
 
 ####2. Explain how you settled on your final choice of HOG parameters.
 
 I tried various combinations of parameters and I choose the parameter like below:
 `
-color_space = 'YCrCb' # Can be RGB, HSV, LUV, HLS, YUV, YCrCb
+color_space = 'RGB' # Can be RGB, HSV, LUV, HLS, YUV, YCrCb
 orient = 9  # HOG orientations
 pix_per_cell = 8 # HOG pixels per cell
 cell_per_block = 2 # HOG cells per block
-hog_channel = 0 # Can be 0, 1, 2, or "ALL"
+hog_channel = "ALL" # Can be 0, 1, 2, or "ALL"
 `
+I used to try many different combinations, finally I found the classifier need more features about HOG, so I choose `hog_channel = "ALL"` to get more feature.
 
 ####3. Describe how (and identify where in your code) you trained a classifier using your selected HOG features (and color features if you used them).
 
 I trained a linear SVM using both bin_spatial(), color_hist() and get_hog_features(). And I found bin_spatial and hog feature are more important than color histograms.
+`
+spatial_feat = True # Spatial features on or off
+hist_feat = True # Histogram features on or off
+hog_feat = True # HOG features on or off
+`
+
+After combining the different feature vector, I use `StandardScaler()` method to normalize the training data.
+
+`
+X = np.vstack((car_features, notcar_features)).astype(np.float64)                        
+# Fit a per-column scaler
+X_scaler = StandardScaler().fit(X)
+# Apply the scaler to X
+scaled_X = X_scaler.transform(X)
+`
+Finally, I use linear SVM to fit the data `svc = LinearSVC()`.
 
 ###Sliding Window Search
 
