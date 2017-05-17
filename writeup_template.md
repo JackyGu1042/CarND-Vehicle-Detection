@@ -139,5 +139,8 @@ draw_img = draw_labeled_bboxes(np.copy(image), labels)
 
 ####1. Briefly discuss any problems / issues you faced in your implementation of this project.  Where will your pipeline likely fail?  What could you do to make it more robust?
 
-Here I'll talk about the approach I took, what techniques I used, what worked and why, where the pipeline might fail and how I might improve it if I were going to pursue this project further.  
+In fact, I'm not very satisfied about this pipeline result, but because of deadline reason, I need submit this project. I think there are some points I need improve:
+* Classifier is not good, I need to tunne some parameter for SVM or change another tool, like network.
+* I think I need to improve the training data, current dataset is not very suitable for this project video.
+* Enfficiency is very low, especially in sliding window search, I need optimize it.
 
