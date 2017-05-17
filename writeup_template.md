@@ -25,7 +25,7 @@ The goals / steps of this project are the following:
 ---
 ### Histogram of Oriented Gradients (HOG)
 
-####1. Extracted HOG features from the training images.
+#### 1. Extracted HOG features from the training images.
 
 The code for this step is contained in the second code cell of the IPython notebook .
 
@@ -33,7 +33,7 @@ I started by reading in all the `vehicle` and `non-vehicle` images. Beacause the
 
 I then explored different color spaces and different `skimage.hog()` parameters (`orientations`, `pixels_per_cell`, and `cells_per_block`). You can find the exmaple in the jupyter notebook file(or html file).
 
-####2. Explain how you settled on your final choice of HOG parameters.
+#### 2. Explain how you settled on your final choice of HOG parameters.
 
 I tried various combinations of parameters and I choose the parameter like below:
 ```python
@@ -45,7 +45,7 @@ hog_channel = "ALL" # Can be 0, 1, 2, or "ALL"
 ```
 I used to try many different combinations, finally I found the classifier need more features about HOG, so I choose `hog_channel = "ALL"` to get more feature.
 
-####3. Describe how (and identify where in your code) you trained a classifier using your selected HOG features (and color features if you used them).
+#### 3. Describe how (and identify where in your code) you trained a classifier using your selected HOG features (and color features if you used them).
 
 I trained a linear SVM using both bin_spatial(), color_hist() and get_hog_features(). And I found bin_spatial and hog feature are more important than color histograms.
 ```python
@@ -65,9 +65,9 @@ scaled_X = X_scaler.transform(X)
 ```
 Finally, I use linear SVM to fit the data `svc = LinearSVC()`.
 
-###Sliding Window Search
+### Sliding Window Search
 
-####1. Describe how (and identify where in your code) you implemented a sliding window search.  How did you decide what scales to search and how much to overlap windows?
+#### 1. Describe how (and identify where in your code) you implemented a sliding window search.  How did you decide what scales to search and how much to overlap windows?
 
 I used to use 4 scales(32*32, 64*64, 96*96, 128*128) to capture the windows, like below code. But later, I found the overlap is more impatant than different scales type. So I decided to use only 2 scales(32*32, 96*96), and 32*32 scale scan in upon area and 96*96 scan wider range with high overlap rate. 
 
@@ -87,7 +87,7 @@ windows_4 = slide_window(image, x_start_stop=[600, 1280], y_start_stop=[400, 720
 windows =   windows_1 + windows_3  
 ```
 
-####2. Show some examples of test images to demonstrate how your pipeline is working.  What did you do to optimize the performance of your classifier?
+#### 2. Show some examples of test images to demonstrate how your pipeline is working.  What did you do to optimize the performance of your classifier?
 
 Ultimately I searched on two scales using `RGB` All-channel HOG features plus spatially binned color and histograms of color in the feature vector, which provided a nice result. 
 
@@ -112,23 +112,26 @@ hog_feat = True # HOG features on or off
 Here's a [link to my video result](./project_video.mp4)
 
 
-####2. Describe how (and identify where in your code) you implemented some kind of filter for false positives and some method for combining overlapping bounding boxes.
+#### 2. Describe how (and identify where in your code) you implemented some kind of filter for false positives and some method for combining overlapping bounding boxes.
 
-I recorded the positions of positive detections in each frame of the video.  From the positive detections I created a heatmap and then thresholded that map to identify vehicle positions.  I then used `scipy.ndimage.measurements.label()` to identify individual blobs in the heatmap.  I then assumed each blob corresponded to a vehicle.  I constructed bounding boxes to cover the area of each blob detected.  
+I recorded the positions of positive detections in each frame of the video.  From the positive detections I created a heatmap and then thresholded that map to identify vehicle positions. I then assumed each blob corresponded to a vehicle.  I constructed bounding boxes to cover the area of each blob detected.  
 
 Here's an example result showing the heatmap from a series of frames of video, the result of `scipy.ndimage.measurements.label()` and the bounding boxes then overlaid on the last frame of video:
 
-### Here are six frames and their corresponding heatmaps:
+```python
+# Add heat to each box in box list
+heat = add_heat(heat,box_list)
+    
+# Apply threshold to help remove false positives
+heat = apply_threshold(heat,1)
 
-![alt text][image5]
+# Visualize the heatmap when displaying    
+heatmap = np.clip(heat, 0, 255)
 
-### Here is the output of `scipy.ndimage.measurements.label()` on the integrated heatmap from all six frames:
-![alt text][image6]
-
-### Here the resulting bounding boxes are drawn onto the last frame in the series:
-![alt text][image7]
-
-
+# Find final boxes from heatmap using label function
+labels = label(heatmap)
+draw_img = draw_labeled_bboxes(np.copy(image), labels)
+```
 
 ---
 
