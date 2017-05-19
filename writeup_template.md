@@ -15,9 +15,9 @@ The goals / steps of this project are the following:
 [image3]: ./output_images/car_HOG.png
 [image4]: ./output_images/slide_window.png
 [image5]: ./output_images/teat1_output.png
-[image6]: ./output_images/teat2_output.png
+[image6]: ./output_images/teat5_output.png
 [image7]: ./output_images/teat3_output.png
-[image8]: ./output_images/output_bboxes.png
+[image8]: ./output_images/heat_map.png
 [video1]: ./project_video.mp4
 
 ## [Rubric](https://review.udacity.com/#!/rubrics/513/view) Points
@@ -134,7 +134,9 @@ hog_feat = True # HOG features on or off
 Below are some sample about test images' result:
 
 ![alt text][image5]
+
 ![alt text][image6]
+
 ![alt text][image7]
 
 ---
@@ -148,8 +150,6 @@ Here's a [link to my video result](./project_video_result_20170517.mp4)
 #### 2. Describe how (and identify where in your code) you implemented some kind of filter for false positives and some method for combining overlapping bounding boxes.
 
 I recorded the positions of positive detections in each frame of the video.  From the positive detections I created a heatmap and then thresholded that map to identify vehicle positions. I then assumed each blob corresponded to a vehicle.  I constructed bounding boxes to cover the area of each blob detected.  
-
-Here's an example result showing the heatmap from a series of frames of video, the result of `scipy.ndimage.measurements.label()` and the bounding boxes then overlaid on the last frame of video:
 
 ```python
 # Add heat to each box in box list
@@ -165,6 +165,9 @@ heatmap = np.clip(heat, 0, 255)
 labels = label(heatmap)
 draw_img = draw_labeled_bboxes(np.copy(image), labels)
 ```
+Below is the smaple of heat image:
+
+![alt text][image7]
 
 ---
 
