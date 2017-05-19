@@ -18,6 +18,7 @@ The goals / steps of this project are the following:
 [image6]: ./output_images/teat5_output.png
 [image7]: ./output_images/teat3_output.png
 [image8]: ./output_images/heat_map.png
+[image9]: ./output_images/slide_window_detect.png
 [video1]: ./project_video.mp4
 
 ## [Rubric](https://review.udacity.com/#!/rubrics/513/view) Points
@@ -167,7 +168,9 @@ draw_img = draw_labeled_bboxes(np.copy(image), labels)
 ```
 Below is the smaple of heat image:
 
-![alt text][image7]
+![alt text][image9]
+
+![alt text][image8]
 
 ---
 
