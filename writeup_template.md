@@ -10,13 +10,14 @@ The goals / steps of this project are the following:
 * Estimate a bounding box for vehicles detected.
 
 [//]: # (Image References)
-[image1]: ./examples/car_not_car.png
-[image2]: ./examples/HOG_example.jpg
-[image3]: ./examples/sliding_windows.jpg
-[image4]: ./examples/sliding_window.jpg
-[image5]: ./examples/bboxes_and_heat.png
-[image6]: ./examples/labels_map.png
-[image7]: ./examples/output_bboxes.png
+[image1]: ./output_images/car_nocar.png
+[image2]: ./output_images/RGB_shadow.PNG
+[image3]: ./output_images/car_HOG.png
+[image4]: ./output_images/slide_window.png
+[image5]: ./output_images/teat1_output.png
+[image6]: ./output_images/teat2_output.png
+[image7]: ./output_images/teat3_output.png
+[image8]: ./output_images/output_bboxes.png
 [video1]: ./project_video.mp4
 
 ## [Rubric](https://review.udacity.com/#!/rubrics/513/view) Points
@@ -33,17 +34,29 @@ I started by reading in all the `vehicle` and `non-vehicle` images. Beacause the
 
 I then explored different color spaces and different `skimage.hog()` parameters (`orientations`, `pixels_per_cell`, and `cells_per_block`). You can find the exmaple in the jupyter notebook file(or html file).
 
+Blew are two sample of training data:
+
+![alt text][image1]
+
 #### 2. Explain how you settled on your final choice of HOG parameters.
 
 I tried various combinations of parameters and I choose the parameter like below:
 ```python
-color_space = 'RGB' # Can be RGB, HSV, LUV, HLS, YUV, YCrCb
+color_space = 'YCrCb' # Can be RGB, HSV, LUV, HLS, YUV, YCrCb
 orient = 9  # HOG orientations
 pix_per_cell = 8 # HOG pixels per cell
 cell_per_block = 2 # HOG cells per block
-hog_channel = "ALL" # Can be 0, 1, 2, or "ALL"
+hog_channel = 0 # Can be 0, 1, 2, or "ALL"
 ```
-I used to try many different combinations, finally I found the classifier need more features about HOG, so I choose `hog_channel = "ALL"` to get more feature.
+I used to use `color_space = 'RGB`, although majority of video works well, but the tree shadow would always effect the result. So according to reviewer's suggestion , I use `YCrCb` to try, which could solve this problem.
+
+![alt text][image2]
+
+I used to try many different combinations, finally I found the classifier need more features about HOG, so I choose `hog_channel = 0` to get more feature.(Need change)
+
+Blew is one sample for HOG image:
+
+![alt text][image3]
 
 #### 3. Describe how (and identify where in your code) you trained a classifier using your selected HOG features (and color features if you used them).
 
@@ -63,7 +76,17 @@ X_scaler = StandardScaler().fit(X)
 # Apply the scaler to X
 scaled_X = X_scaler.transform(X)
 ```
-Finally, I use linear SVM to fit the data `svc = LinearSVC()`.
+Finally, I use linear SVM to fit the data `svc = LinearSVC()`. And below is the result of SVM:
+
+```
+spatial_features: 3072
+hist_features: 768
+hog_features: 2352
+Using: 12 orientations 8 pixels per cell and 2 cells per block
+Feature vector length: 6192
+6.97 Seconds to train SVC...
+Test Accuracy of SVC =  0.9882
+```
 
 ### Sliding Window Search
 
@@ -87,16 +110,20 @@ windows_4 = slide_window(image, x_start_stop=[600, 1280], y_start_stop=[400, 720
 windows =   windows_1 + windows_3  
 ```
 
+Below is the image with all sliding windows:
+
+![alt text][image4]
+
 #### 2. Show some examples of test images to demonstrate how your pipeline is working.  What did you do to optimize the performance of your classifier?
 
-Ultimately I searched on two scales using `RGB` All-channel HOG features plus spatially binned color and histograms of color in the feature vector, which provided a nice result. 
+Ultimately I searched on two scales using `YCrCb` 0-channel HOG features plus spatially binned color and histograms of color in the feature vector, which provided a nice result. 
 
 ```python
-color_space = 'RGB' # Can be RGB, HSV, LUV, HLS, YUV, YCrCb
+color_space = 'YCrCb' # Can be RGB, HSV, LUV, HLS, YUV, YCrCb
 orient = 9  # HOG orientations
 pix_per_cell = 8 # HOG pixels per cell
 cell_per_block = 2 # HOG cells per block
-hog_channel = "ALL" # Can be 0, 1, 2, or "ALL"
+hog_channel = 0 # Can be 0, 1, 2, or "ALL"
 spatial_size = (32, 32) # Spatial binning dimensions
 hist_bins = 32    # Number of histogram bins
 spatial_feat = True # Spatial features on or off
@@ -104,12 +131,18 @@ hist_feat = True # Histogram features on or off
 hog_feat = True # HOG features on or off
 ```
 
+Below are some sample about test images' result:
+
+![alt text][image5]
+![alt text][image6]
+![alt text][image7]
+
 ---
 
 ### Video Implementation
 
 ####1. Provide a link to your final video output.  Your pipeline should perform reasonably well on the entire project video (somewhat wobbly or unstable bounding boxes are ok as long as you are identifying the vehicles most of the time with minimal false positives.)
-Here's a [link to my video result](./project_video.mp4)
+Here's a [link to my video result](./project_video_result_20170517.mp4)
 
 
 #### 2. Describe how (and identify where in your code) you implemented some kind of filter for false positives and some method for combining overlapping bounding boxes.
