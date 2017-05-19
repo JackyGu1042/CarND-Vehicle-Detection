@@ -183,6 +183,9 @@ elif frame_len > frame_filter:
     #print(hot_windows_frame)
     print("stage 3:",frame_len)
 ```
+Onemore vidoe is combine advance line detection and vehicle detection. Here's a [link to my video result](./project_video_result_20170517.mp4)
+
+![alt text][image7]
 
 #### 2. Describe how (and identify where in your code) you implemented some kind of filter for false positives and some method for combining overlapping bounding boxes.
 
