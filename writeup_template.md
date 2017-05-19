@@ -78,6 +78,8 @@ X_scaler = StandardScaler().fit(X)
 scaled_X = X_scaler.transform(X)
 ```
 
+Moreover, I use thresholding the decision function which helps to ensure high confidence predictions and reduce false positives.The decision function returns a confidence score based on how far away the sample is from the decision boundary. A higher decision function means a more confident prediction so by setting a threshold on it, you can ensure that you are only considering high confidence predictions as vehicle detections.
+
 ```python
 prediction = clf.predict(test_features)
 decision_value = clf.decision_function(test_features)
