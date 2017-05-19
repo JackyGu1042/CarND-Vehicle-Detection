@@ -77,6 +77,15 @@ X_scaler = StandardScaler().fit(X)
 # Apply the scaler to X
 scaled_X = X_scaler.transform(X)
 ```
+
+```python
+prediction = clf.predict(test_features)
+decision_value = clf.decision_function(test_features)
+#
+#7) If positive (prediction == 1) then save the window
+if prediction == 1 and decision_value > 0.6:
+    on_windows.append(window)
+```
 Finally, I use linear SVM to fit the data `svc = LinearSVC()`. And below is the result of SVM:
 
 ```
