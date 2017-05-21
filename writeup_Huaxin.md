@@ -65,7 +65,7 @@ spatial_feat_2 = True # Spatial features on or off
 hist_feat_2 = True # Histogram features on or off
 hog_feat_2 = True # HOG features on or off
 ```
-I used to use `color_space = 'RGB`, although majority of video works well, but the tree shadow would always effect the result. So according to reviewer's suggestion , I use `YUV` to try, which could solve this problem. But when I use `YUV`, sometime cannot find the black car, so finally I combine two method.
+I used to use `color_space = 'RGB'`, although majority of video works well, but the tree shadow would always effect the result. So according to reviewer's suggestion , I use `'YUV'` to try, which could solve this problem. But when I use `'YUV'`, sometime cannot find the black car, so finally I combine two method.
 
 ![alt text][image2]
 
@@ -268,9 +268,9 @@ Below is the smaple of heat image:
 
 ---
 
-###Discussion
+### Discussion
 
-####1. Briefly discuss any problems / issues you faced in your implementation of this project.  Where will your pipeline likely fail?  What could you do to make it more robust?
+#### 1. Briefly discuss any problems / issues you faced in your implementation of this project.  Where will your pipeline likely fail?  What could you do to make it more robust?
 
 In fact, I'm not very satisfied about this pipeline result, but because of deadline reason, I need submit this project. I think there are some points I need improve:
 * Classifier is not good, I need to tunne some parameter for SVM or change another tool, like network.
