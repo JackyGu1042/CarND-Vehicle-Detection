@@ -14,9 +14,9 @@ The goals / steps of this project are the following:
 [image2]: ./output_images/RGB_shadow.PNG
 [image3]: ./output_images/car_HOG.png
 [image4]: ./output_images/slide_window.png
-[image5]: ./output_images/teat1.g
-[image6]: ./output_images/teat5.jpg
-[image7]: ./output_images/teat3.jpg
+[image5]: ./output_images/teat1_output.png
+[image6]: ./output_images/teat5_output.png
+[image7]: ./output_images/teat3_output.png
 [image8]: ./output_images/heat_map.png
 [image9]: ./output_images/slide_window_detect.png
 [video1]: ./project_video.mp4
