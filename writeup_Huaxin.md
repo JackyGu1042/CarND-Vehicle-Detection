@@ -215,7 +215,8 @@ Below are some sample about test images' result:
 ### Video Implementation
 
 ####1. Provide a link to your final video output.  Your pipeline should perform reasonably well on the entire project video (somewhat wobbly or unstable bounding boxes are ok as long as you are identifying the vehicles most of the time with minimal false positives.)
-Here's a [link to my video result](./project_video_result_20170517.mp4)
+Here's a [link to my video result](./project_video_result.mp4)
+Onemore vidoe is combine advance line detection and vehicle detection. Here's a [link to my video result](./project45_video_result.mp4)
 
 According to reviewer's advice, I add method to let detections be made around the same location in a sequence of multiple consecutive frames. I use simplest way, just store the heat maps of the 26 most recent frames in a list, take the sum of those heat maps, and set a threshold on the combined heat map to get the bounding boxes for each frame. This helps not only to filter out false positives, but it also makes the boxes to appear much smoother across frames.
 
@@ -242,7 +243,6 @@ elif frame_len > frame_filter:
     #print(hot_windows_frame)
     print("stage 3:",frame_len)
 ```
-Onemore vidoe is combine advance line detection and vehicle detection. Here's a [link to my video result](./project_video_result.mp4)
 
 #### 2. Describe how (and identify where in your code) you implemented some kind of filter for false positives and some method for combining overlapping bounding boxes.
 
