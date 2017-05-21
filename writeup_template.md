@@ -128,7 +128,7 @@ Below is the image with all sliding windows:
 
 #### 2. Show some examples of test images to demonstrate how your pipeline is working.  What did you do to optimize the performance of your classifier?
 
-Ultimately I searched on two scales using `YCrCb` 0-channel HOG features plus spatially binned color and histograms of color in the feature vector, which provided a nice result. 
+I using two times procession, one `YUV` 0-channel HOG features plus spatially binned color and histograms of color, another one is `RGB` 0-channel HOG features plus spatially binned color and histograms of color in the feature vector. ALthough this is very low efficiency and time cost, but currently result is not bad.
 
 ```python
 color_space = 'YCrCb' # Can be RGB, HSV, LUV, HLS, YUV, YCrCb
@@ -141,8 +141,37 @@ hist_bins = 32    # Number of histogram bins
 spatial_feat = True # Spatial features on or off
 hist_feat = True # Histogram features on or off
 hog_feat = True # HOG features on or off
+
+color_space_2 = 'RGB' # Can be RGB, HSV, LUV, HLS, YUV, YCrCb
+orient_2 = 9  # HOG orientations
+pix_per_cell_2 = 8 # HOG pixels per cell
+cell_per_block_2 = 2 # HOG cells per block
+hog_channel_2 = "ALL" # Can be 0, 1, 2, or "ALL"
+spatial_size_2 = (32, 32) # Spatial binning dimensions
+hist_bins_2 = 256    # Number of histogram bins
+spatial_feat_2 = True # Spatial features on or off
+hist_feat_2 = True # Histogram features on or off
+hog_feat_2 = True # HOG features on or off
 ```
 
+```python
+hot_windows = search_windows(image, windows, svc, X_scaler, color_space=color_space, 
+                            spatial_size=spatial_size, hist_bins=hist_bins, 
+                            orient=orient, pix_per_cell=pix_per_cell, 
+                            cell_per_block=cell_per_block, 
+                            hog_channel=hog_channel, spatial_feat=spatial_feat, 
+                            hist_feat=hist_feat, hog_feat=hog_feat)                       
+    
+hot_windows_2 = search_windows(image, windows, svc_2, X_scaler_2, color_space=color_space_2, 
+                        spatial_size=spatial_size_2, hist_bins=hist_bins_2, 
+                        orient=orient_2, pix_per_cell=pix_per_cell_2, 
+                        cell_per_block=cell_per_block_2, 
+                        hog_channel=hog_channel_2,spatial_feat=spatial_feat_2, 
+                        hist_feat=hist_feat_2, hog_feat=hog_feat_2)                       
+
+hot_windows = hot_windows + hot_windows_2
+    
+```
 Below are some sample about test images' result:
 
 ![alt text][image5]
