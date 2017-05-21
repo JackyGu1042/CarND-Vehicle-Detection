@@ -43,17 +43,33 @@ Blew are two sample of training data:
 
 I tried various combinations of parameters and I choose the parameter like below:
 ```python
-color_space = 'YCrCb' # Can be RGB, HSV, LUV, HLS, YUV, YCrCb
+color_space = 'YUV' # Can be RGB, HSV, LUV, HLS, YUV, YCrCb
 orient = 9  # HOG orientations
 pix_per_cell = 8 # HOG pixels per cell
 cell_per_block = 2 # HOG cells per block
-hog_channel = 0 # Can be 0, 1, 2, or "ALL"
+hog_channel = "ALL" # Can be 0, 1, 2, or "ALL"
+spatial_size = (32, 32) # Spatial binning dimensions
+hist_bins = 256    # Number of histogram bins
+spatial_feat = True # Spatial features on or off
+hist_feat = True # Histogram features on or off
+hog_feat = True # HOG features on or off
+
+color_space_2 = 'RGB' # Can be RGB, HSV, LUV, HLS, YUV, YCrCb
+orient_2 = 9  # HOG orientations
+pix_per_cell_2 = 8 # HOG pixels per cell
+cell_per_block_2 = 2 # HOG cells per block
+hog_channel_2 = "ALL" # Can be 0, 1, 2, or "ALL"
+spatial_size_2 = (32, 32) # Spatial binning dimensions
+hist_bins_2 = 256    # Number of histogram bins
+spatial_feat_2 = True # Spatial features on or off
+hist_feat_2 = True # Histogram features on or off
+hog_feat_2 = True # HOG features on or off
 ```
-I used to use `color_space = 'RGB`, although majority of video works well, but the tree shadow would always effect the result. So according to reviewer's suggestion , I use `YCrCb` to try, which could solve this problem.
+I used to use `color_space = 'RGB`, although majority of video works well, but the tree shadow would always effect the result. So according to reviewer's suggestion , I use `YUV` to try, which could solve this problem. But when I use `YUV`, sometime cannot find the black car, so finally I combine two method.
 
 ![alt text][image2]
 
-I used to try many different combinations, finally I found the classifier need more features about HOG, so I choose `hog_channel = 0` to get more feature.(Need change)
+I used to try many different combinations, finally I found the classifier need more features about HOG, so I choose `hog_channel = "ALL"` to get more feature.
 
 Blew is one sample for HOG image:
 
@@ -62,6 +78,7 @@ Blew is one sample for HOG image:
 #### 3. Describe how (and identify where in your code) you trained a classifier using your selected HOG features (and color features if you used them).
 
 I trained a linear SVM using both bin_spatial(), color_hist() and get_hog_features(). And I found bin_spatial and hog feature are more important than color histograms.
+
 ```python
 spatial_feat = True # Spatial features on or off
 hist_feat = True # Histogram features on or off
@@ -85,7 +102,7 @@ prediction = clf.predict(test_features)
 decision_value = clf.decision_function(test_features)
 #
 #7) If positive (prediction == 1) then save the window
-if prediction == 1 and decision_value > 0.6:
+if prediction == 1 and decision_value > 1:
     on_windows.append(window)
 ```
 Finally, I use linear SVM to fit the data `svc = LinearSVC()`. And below is the result of SVM:
@@ -93,13 +110,23 @@ Finally, I use linear SVM to fit the data `svc = LinearSVC()`. And below is the 
 ```
 spatial_features: 3072
 hist_features: 768
-hog_features: 2352
-Using: 12 orientations 8 pixels per cell and 2 cells per block
-Feature vector length: 6192
-6.97 Seconds to train SVC...
-Test Accuracy of SVC =  0.9882
+hog_features: 5292
+Using: 9 orientations 8 pixels per cell and 2 cells per block
+Feature vector length: 9132
+11.16 Seconds to train SVC...
+Test Accuracy of SVC =  0.9922
 ```
+and 
 
+```
+spatial_features: 3072
+hist_features: 768
+hog_features: 5292
+Using: 9 orientations 8 pixels per cell and 2 cells per block
+Feature vector length: 9132
+16.58 Seconds to train SVC...
+Test Accuracy of SVC =  0.9881
+```
 ### Sliding Window Search
 
 #### 1. Describe how (and identify where in your code) you implemented a sliding window search.  How did you decide what scales to search and how much to overlap windows?
@@ -107,19 +134,22 @@ Test Accuracy of SVC =  0.9882
 I used to use 4 scales(32*32, 64*64, 96*96, 128*128) to capture the windows, like below code. But later, I found the overlap is more impatant than different scales type. So I decided to use only 2 scales(32*32, 96*96), and 32*32 scale scan in upon area and 96*96 scan wider range with high overlap rate. 
 
 ```python
-windows_1 = slide_window(image, x_start_stop=[600, 1280], y_start_stop=[400, 528], 
+def slide_windows(image):
+    windows_1 = slide_window(image, x_start_stop=[600, 1280], y_start_stop=[400, 528], 
                     xy_window=(32, 32), xy_overlap=(0.5, 0.5))
 
-windows_2 = slide_window(image, x_start_stop=[600, 1280], y_start_stop=[400, 528], 
-                    xy_window=(64, 64), xy_overlap=(0.8, 0.8))
+    windows_2 = slide_window(image, x_start_stop=[600, 1280], y_start_stop=[400, 528], 
+                        xy_window=(64, 64), xy_overlap=(0.8, 0.8))
 
-windows_3 = slide_window(image, x_start_stop=[600, 1280], y_start_stop=[400, 720], 
-                    xy_window=(96, 96), xy_overlap=(0.8, 0.8))
+    windows_3 = slide_window(image, x_start_stop=[600, 1280], y_start_stop=[400, 640], 
+                        xy_window=(96, 96), xy_overlap=(0.8, 0.8))
 
-windows_4 = slide_window(image, x_start_stop=[600, 1280], y_start_stop=[400, 720], 
-                    xy_window=(128, 128), xy_overlap=(0.5, 0.5))
-                    
-windows =   windows_1 + windows_3  
+    windows_4 = slide_window(image, x_start_stop=[600, 1280], y_start_stop=[400, 640], 
+                        xy_window=(128, 128), xy_overlap=(0.8, 0.8))
+
+    windows =   windows_2 + windows_3 
+    
+    return windows
 ```
 
 Below is the image with all sliding windows:
