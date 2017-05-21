@@ -244,8 +244,6 @@ elif frame_len > frame_filter:
 ```
 Onemore vidoe is combine advance line detection and vehicle detection. Here's a [link to my video result](./project_video_result_20170517.mp4)
 
-![alt text][image7]
-
 #### 2. Describe how (and identify where in your code) you implemented some kind of filter for false positives and some method for combining overlapping bounding boxes.
 
 I recorded the positions of positive detections in each frame of the video.  From the positive detections I created a heatmap and then thresholded that map to identify vehicle positions. I then assumed each blob corresponded to a vehicle.  I constructed bounding boxes to cover the area of each blob detected.  
@@ -265,8 +263,6 @@ labels = label(heatmap)
 draw_img = draw_labeled_bboxes(np.copy(image), labels)
 ```
 Below is the smaple of heat image:
-
-![alt text][image9]
 
 ![alt text][image8]
 
